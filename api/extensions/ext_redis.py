@@ -1,3 +1,5 @@
+import json
+import logging
 from typing import Any, Union
 
 import redis
@@ -60,6 +62,8 @@ def init_app(app: DifyApp):
         "encoding_errors": "strict",
         "decode_responses": False,
     }
+
+    logging.info("Initializing Redis client parem:" + json.dumps(redis_params))
 
     if dify_config.REDIS_USE_SENTINEL:
         assert dify_config.REDIS_SENTINELS is not None, "REDIS_SENTINELS must be set when REDIS_USE_SENTINEL is True"
