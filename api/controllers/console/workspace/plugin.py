@@ -1,4 +1,5 @@
 import io
+import logging
 
 from flask import request, send_file
 from flask_login import current_user  # type: ignore
@@ -269,6 +270,7 @@ class PluginFetchInstallTasksApi(Resource):
         parser.add_argument("page_size", type=int, required=True, location="args")
         args = parser.parse_args()
 
+        logging.info(f'plugin fetching tenant_id:{tenant_id}, page:{args["page"]}, page_size:{args["page_size"]}')
         try:
             return jsonable_encoder(
                 {"tasks": PluginService.fetch_install_tasks(tenant_id, args["page"], args["page_size"])}

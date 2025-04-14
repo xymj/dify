@@ -59,6 +59,8 @@ class BasePluginManager:
         if headers.get("Content-Type") == "application/json" and isinstance(data, dict):
             data = json.dumps(data)
 
+        logger.info(f"Plugin daemon inner API request method:{method}, path:{path}, url:{url},"
+                    f" headers:{headers}, data:{data}")
         try:
             response = requests.request(
                 method=method, url=str(url), headers=headers, data=data, params=params, stream=stream, files=files
