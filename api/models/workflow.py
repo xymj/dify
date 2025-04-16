@@ -104,28 +104,42 @@ class Workflow(Base):
         db.PrimaryKeyConstraint("id", name="workflow_pkey"),
         db.Index("workflow_version_idx", "tenant_id", "app_id", "version"),
     )
-
+    # ID
     id: Mapped[str] = mapped_column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 租户ID
     tenant_id: Mapped[str] = mapped_column(StringUUID, nullable=False)
+    # 应用ID
     app_id: Mapped[str] = mapped_column(StringUUID, nullable=False)
+    # 工作流类型
     type: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    # 版本
     version: Mapped[str] = mapped_column(db.String(255), nullable=False)
     marked_name: Mapped[str] = mapped_column(default="", server_default="")
     marked_comment: Mapped[str] = mapped_column(default="", server_default="")
+    # 工作流画布配置
     graph: Mapped[str] = mapped_column(sa.Text)
+    # 功能
+    # Mapped[str]: 用于指示 Python 属性的类型，增强代码的可读性和类型安全性。
+    # sa.TEXT: 指定数据库列的实际存储类型，适用于需要存储长文本的字段。
     _features: Mapped[str] = mapped_column("features", sa.TEXT)
+    # 创建者ID
     created_by: Mapped[str] = mapped_column(StringUUID, nullable=False)
+    # 创建时间
     created_at: Mapped[datetime] = mapped_column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 更新者ID
     updated_by: Mapped[Optional[str]] = mapped_column(StringUUID)
+    # 更新时间
     updated_at: Mapped[datetime] = mapped_column(
         db.DateTime,
         nullable=False,
         default=datetime.now(UTC).replace(tzinfo=None),
         server_onupdate=func.current_timestamp(),
     )
+    # 环境变量字典
     _environment_variables: Mapped[str] = mapped_column(
         "environment_variables", db.Text, nullable=False, server_default="{}"
     )
+    # 会话变量字段
     _conversation_variables: Mapped[str] = mapped_column(
         "conversation_variables", db.Text, nullable=False, server_default="{}"
     )

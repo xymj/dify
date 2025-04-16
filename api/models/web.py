@@ -14,12 +14,17 @@ class SavedMessage(Base):
         db.PrimaryKeyConstraint("id", name="saved_message_pkey"),
         db.Index("saved_message_message_idx", "app_id", "message_id", "created_by_role", "created_by"),
     )
-
+    # ID
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 应用ID
     app_id = db.Column(StringUUID, nullable=False)
+    # 消息ID
     message_id = db.Column(StringUUID, nullable=False)
+    # 创建者角色
     created_by_role = db.Column(db.String(255), nullable=False, server_default=db.text("'end_user'::character varying"))
+    # 创建者ID
     created_by = db.Column(StringUUID, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
     @property
@@ -33,10 +38,15 @@ class PinnedConversation(Base):
         db.PrimaryKeyConstraint("id", name="pinned_conversation_pkey"),
         db.Index("pinned_conversation_conversation_idx", "app_id", "conversation_id", "created_by_role", "created_by"),
     )
-
+    # ID
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 应用ID
     app_id = db.Column(StringUUID, nullable=False)
+    # 会话ID
     conversation_id: Mapped[str] = mapped_column(StringUUID)
+    # 创建者角色
     created_by_role = db.Column(db.String(255), nullable=False, server_default=db.text("'end_user'::character varying"))
+    # 创建者ID
     created_by = db.Column(StringUUID, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())

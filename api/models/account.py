@@ -27,17 +27,29 @@ class Account(UserMixin, Base):
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=True)
+    # 密码盐
     password_salt = db.Column(db.String(255), nullable=True)
+    # 头像
     avatar = db.Column(db.String(255))
+    # 界面语言
     interface_language = db.Column(db.String(255))
+    # 界面主题
     interface_theme = db.Column(db.String(255))
+    # 时区
     timezone = db.Column(db.String(255))
+    # 上次登录时间
     last_login_at = db.Column(db.DateTime)
+    # 上次登录IP
     last_login_ip = db.Column(db.String(255))
+    # 上次活动时间
     last_active_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 状态
     status = db.Column(db.String(16), nullable=False, server_default=db.text("'active'::character varying"))
+    # 初始化时间
     initialized_at = db.Column(db.DateTime)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 更新时间
     updated_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
     @property
@@ -195,13 +207,21 @@ class Tenant(db.Model):  # type: ignore[name-defined]
     __tablename__ = "tenants"
     __table_args__ = (db.PrimaryKeyConstraint("id", name="tenant_pkey"),)
 
+    # ID
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 名称
     name = db.Column(db.String(255), nullable=False)
+    # 加密公钥
     encrypt_public_key = db.Column(db.Text)
+    # 计划
     plan = db.Column(db.String(255), nullable=False, server_default=db.text("'basic'::character varying"))
+    # 状态
     status = db.Column(db.String(255), nullable=False, server_default=db.text("'normal'::character varying"))
+    # 自定义配置
     custom_config = db.Column(db.Text)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 更新时间
     updated_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
     def get_accounts(self) -> list[Account]:
@@ -228,14 +248,21 @@ class TenantAccountJoin(db.Model):  # type: ignore[name-defined]
         db.Index("tenant_account_join_tenant_id_idx", "tenant_id"),
         db.UniqueConstraint("tenant_id", "account_id", name="unique_tenant_account_join"),
     )
-
+    # ID
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 租户ID
     tenant_id = db.Column(StringUUID, nullable=False)
+    # 账户ID
     account_id = db.Column(StringUUID, nullable=False)
+    # 当前
     current = db.Column(db.Boolean, nullable=False, server_default=db.text("false"))
+    # 角色
     role = db.Column(db.String(16), nullable=False, server_default="normal")
+    # 邀请人ID
     invited_by = db.Column(StringUUID, nullable=True)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 更新时间
     updated_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
 
@@ -246,13 +273,19 @@ class AccountIntegrate(db.Model):  # type: ignore[name-defined]
         db.UniqueConstraint("account_id", "provider", name="unique_account_provider"),
         db.UniqueConstraint("provider", "open_id", name="unique_provider_open_id"),
     )
-
+    # ID
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 账户ID
     account_id = db.Column(StringUUID, nullable=False)
+    # 提供者
     provider = db.Column(db.String(16), nullable=False)
+    # 开放ID
     open_id = db.Column(db.String(255), nullable=False)
+    # 加密令牌
     encrypted_token = db.Column(db.String(255), nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 更新时间
     updated_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
 
@@ -263,15 +296,23 @@ class InvitationCode(db.Model):  # type: ignore[name-defined]
         db.Index("invitation_codes_batch_idx", "batch"),
         db.Index("invitation_codes_code_idx", "code", "status"),
     )
-
+    # ID
     id = db.Column(db.Integer, nullable=False)
+    # 批次
     batch = db.Column(db.String(255), nullable=False)
+    # 邀请码
     code = db.Column(db.String(32), nullable=False)
+    # 状态
     status = db.Column(db.String(16), nullable=False, server_default=db.text("'unused'::character varying"))
+    # 使用时间
     used_at = db.Column(db.DateTime)
+    # 使用租户ID
     used_by_tenant_id = db.Column(StringUUID)
+    # 使用账户ID
     used_by_account_id = db.Column(StringUUID)
+    # 废弃时间
     deprecated_at = db.Column(db.DateTime)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.text("CURRENT_TIMESTAMP(0)"))
 
 

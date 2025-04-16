@@ -43,23 +43,39 @@ class Dataset(db.Model):  # type: ignore[name-defined]
 
     INDEXING_TECHNIQUE_LIST = ["high_quality", "economy", None]
     PROVIDER_LIST = ["vendor", "external", None]
-
+    # ID
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 租户ID
     tenant_id = db.Column(StringUUID, nullable=False)
+    # 名称
     name = db.Column(db.String(255), nullable=False)
+    # 描述
     description = db.Column(db.Text, nullable=True)
+    # 提供者 默认为 'vendor'
     provider = db.Column(db.String(255), nullable=False, server_default=db.text("'vendor'::character varying"))
+    # 权限 默认为'only_me'
     permission = db.Column(db.String(255), nullable=False, server_default=db.text("'only_me'::character varying"))
+    # 数据源类型
     data_source_type = db.Column(db.String(255))
+    # 索引技术
     indexing_technique = db.Column(db.String(255), nullable=True)
+    # 索引结构
     index_struct = db.Column(db.Text, nullable=True)
+    # 创建者
     created_by = db.Column(StringUUID, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 更新者
     updated_by = db.Column(StringUUID, nullable=True)
+    # 更新时间
     updated_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 嵌入模型
     embedding_model = db.Column(db.String(255), nullable=True)
+    # 嵌入模型提供者
     embedding_model_provider = db.Column(db.String(255), nullable=True)
+    # 集合绑定ID
     collection_binding_id = db.Column(StringUUID, nullable=True)
+    # 检索模型
     retrieval_model = db.Column(JSONB, nullable=True)
     built_in_field_enabled = db.Column(db.Boolean, nullable=False, server_default=db.text("false"))
 
@@ -261,12 +277,17 @@ class DatasetProcessRule(db.Model):  # type: ignore[name-defined]
         db.PrimaryKeyConstraint("id", name="dataset_process_rule_pkey"),
         db.Index("dataset_process_rule_dataset_id_idx", "dataset_id"),
     )
-
+    # ID
     id = db.Column(StringUUID, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    # 数据集ID
     dataset_id = db.Column(StringUUID, nullable=False)
+    # 模式 默认为 ‘automatic'
     mode = db.Column(db.String(255), nullable=False, server_default=db.text("'automatic'::character varying"))
+    # 规则
     rules = db.Column(db.Text, nullable=True)
+    # 创建者
     created_by = db.Column(StringUUID, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
     MODES = ["automatic", "custom", "hierarchical"]
@@ -306,61 +327,101 @@ class Document(db.Model):  # type: ignore[name-defined]
     )
 
     # initial fields
+    # ID
     id = db.Column(StringUUID, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    # 租户ID
     tenant_id = db.Column(StringUUID, nullable=False)
+    # 数据集ID
     dataset_id = db.Column(StringUUID, nullable=False)
+    # 位置
     position = db.Column(db.Integer, nullable=False)
+    # 数据源类型
     data_source_type = db.Column(db.String(255), nullable=False)
+    # 数据源信息
     data_source_info = db.Column(db.Text, nullable=True)
+    # 数据集处理规则ID
     dataset_process_rule_id = db.Column(StringUUID, nullable=True)
+    # 批次
     batch = db.Column(db.String(255), nullable=False)
+    # 名称
     name = db.Column(db.String(255), nullable=False)
+    # 创建来源
     created_from = db.Column(db.String(255), nullable=False)
+    # 创建者
     created_by = db.Column(StringUUID, nullable=False)
+    # 创建API请求ID
     created_api_request_id = db.Column(StringUUID, nullable=True)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
     # start processing
+    # 处理开始时间
     processing_started_at = db.Column(db.DateTime, nullable=True)
 
     # parsing
+    # 文件ID
     file_id = db.Column(db.Text, nullable=True)
+    # 字数
     word_count = db.Column(db.Integer, nullable=True)
+    # 解析完成时间
     parsing_completed_at = db.Column(db.DateTime, nullable=True)
 
     # cleaning
+    # 清理完成时间
     cleaning_completed_at = db.Column(db.DateTime, nullable=True)
 
     # split
+    # 分割完成时间
     splitting_completed_at = db.Column(db.DateTime, nullable=True)
 
     # indexing
+    # 令牌数
     tokens = db.Column(db.Integer, nullable=True)
+    # 索引延迟
     indexing_latency = db.Column(db.Float, nullable=True)
+    # 完成时间
     completed_at = db.Column(db.DateTime, nullable=True)
 
     # pause
+    # 是否暂停 默认为 false
     is_paused = db.Column(db.Boolean, nullable=True, server_default=db.text("false"))
+    # 暂停者
     paused_by = db.Column(StringUUID, nullable=True)
+    # 暂停时间
     paused_at = db.Column(db.DateTime, nullable=True)
 
     # error
+    # 错误
     error = db.Column(db.Text, nullable=True)
+    # 停止时间
     stopped_at = db.Column(db.DateTime, nullable=True)
 
     # basic fields
+    # 索引状态 默认为 waiting'
     indexing_status = db.Column(db.String(255), nullable=False, server_default=db.text("'waiting'::character varying"))
+    # 启用 默认为 true
     enabled = db.Column(db.Boolean, nullable=False, server_default=db.text("true"))
+    # 禁用时间
     disabled_at = db.Column(db.DateTime, nullable=True)
+    # 禁用者
     disabled_by = db.Column(StringUUID, nullable=True)
+    # 存档 默认为 false
     archived = db.Column(db.Boolean, nullable=False, server_default=db.text("false"))
+    # 存档原因
     archived_reason = db.Column(db.String(255), nullable=True)
+    # 存档者
     archived_by = db.Column(StringUUID, nullable=True)
+    # 存档时间
     archived_at = db.Column(db.DateTime, nullable=True)
+    # 更新时间
     updated_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 文档类型
     doc_type = db.Column(db.String(40), nullable=True)
+    # 文档元数据
     doc_metadata = db.Column(JSONB, nullable=True)
+    # 文档形式 默认为"text_model
     doc_form = db.Column(db.String(255), nullable=False, server_default=db.text("'text_model'::character varying"))
+    # 文档语言
     doc_language = db.Column(db.String(255), nullable=True)
 
     DATA_SOURCES = ["upload_file", "notion_import", "website_crawl"]
@@ -648,34 +709,59 @@ class DocumentSegment(db.Model):  # type: ignore[name-defined]
     )
 
     # initial fields
+    # ID
     id = db.Column(StringUUID, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    # 租户ID
     tenant_id = db.Column(StringUUID, nullable=False)
+    # 数据集ID
     dataset_id = db.Column(StringUUID, nullable=False)
+    # 文档ID
     document_id = db.Column(StringUUID, nullable=False)
+    # 位置
     position: Mapped[int]
+    # 内容
     content = db.Column(db.Text, nullable=False)
+    # 答案
     answer = db.Column(db.Text, nullable=True)
+    # 字数
     word_count = db.Column(db.Integer, nullable=False)
+    # 令牌数
     tokens = db.Column(db.Integer, nullable=False)
 
     # indexing fields
+    # 关键词
     keywords = db.Column(db.JSON, nullable=True)
+    # 索引节点ID
     index_node_id = db.Column(db.String(255), nullable=True)
+    # 索引节点哈希
     index_node_hash = db.Column(db.String(255), nullable=True)
 
     # basic fields
+    # 命中数 默认为0
     hit_count = db.Column(db.Integer, nullable=False, default=0)
+    # 启用 默认为 true
     enabled = db.Column(db.Boolean, nullable=False, server_default=db.text("true"))
+    # 禁用时间
     disabled_at = db.Column(db.DateTime, nullable=True)
+    # 禁用者
     disabled_by = db.Column(StringUUID, nullable=True)
+    # 状态 默认为 waiting'
     status = db.Column(db.String(255), nullable=False, server_default=db.text("'waiting'::character varying"))
+    # 创建者
     created_by = db.Column(StringUUID, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 更新者
     updated_by = db.Column(StringUUID, nullable=True)
+    # 更新时间
     updated_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 索引时间
     indexing_at = db.Column(db.DateTime, nullable=True)
+    # 完成时间
     completed_at = db.Column(db.DateTime, nullable=True)
+    # 错误
     error = db.Column(db.Text, nullable=True)
+    # 停止时间
     stopped_at = db.Column(db.DateTime, nullable=True)
 
     @property
@@ -833,10 +919,13 @@ class AppDatasetJoin(db.Model):  # type: ignore[name-defined]
         db.PrimaryKeyConstraint("id", name="app_dataset_join_pkey"),
         db.Index("app_dataset_join_app_dataset_idx", "dataset_id", "app_id"),
     )
-
+    # ID
     id = db.Column(StringUUID, primary_key=True, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    # 应用ID
     app_id = db.Column(StringUUID, nullable=False)
+    # 数据集ID
     dataset_id = db.Column(StringUUID, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.current_timestamp())
 
     @property
@@ -850,14 +939,21 @@ class DatasetQuery(db.Model):  # type: ignore[name-defined]
         db.PrimaryKeyConstraint("id", name="dataset_query_pkey"),
         db.Index("dataset_query_dataset_id_idx", "dataset_id"),
     )
-
+    # ID
     id = db.Column(StringUUID, primary_key=True, nullable=False, server_default=db.text("uuid_generate_v4()"))
+    # 数据集ID
     dataset_id = db.Column(StringUUID, nullable=False)
+    # 内容
     content = db.Column(db.Text, nullable=False)
+    # 来源
     source = db.Column(db.String(255), nullable=False)
+    # 来源应用ID
     source_app_id = db.Column(StringUUID, nullable=True)
+    # 创建者角色
     created_by_role = db.Column(db.String, nullable=False)
+    # 创建者
     created_by = db.Column(StringUUID, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.current_timestamp())
 
 
@@ -867,10 +963,13 @@ class DatasetKeywordTable(db.Model):  # type: ignore[name-defined]
         db.PrimaryKeyConstraint("id", name="dataset_keyword_table_pkey"),
         db.Index("dataset_keyword_table_dataset_id_idx", "dataset_id"),
     )
-
+    # ID
     id = db.Column(StringUUID, primary_key=True, server_default=db.text("uuid_generate_v4()"))
+    # 数据集ID
     dataset_id = db.Column(StringUUID, nullable=False, unique=True)
+    # 关键词表
     keyword_table = db.Column(db.Text, nullable=False)
+    # 数据源类型 默认为'database'
     data_source_type = db.Column(
         db.String(255), nullable=False, server_default=db.text("'database'::character varying")
     )
@@ -913,14 +1012,19 @@ class Embedding(db.Model):  # type: ignore[name-defined]
         db.UniqueConstraint("model_name", "hash", "provider_name", name="embedding_hash_idx"),
         db.Index("created_at_idx", "created_at"),
     )
-
+    # ID
     id = db.Column(StringUUID, primary_key=True, server_default=db.text("uuid_generate_v4()"))
+    # 模型名称 默认为'text-embedding-ada-002'
     model_name = db.Column(
         db.String(255), nullable=False, server_default=db.text("'text-embedding-ada-002'::character varying")
     )
+    # 哈希
     hash = db.Column(db.String(64), nullable=False)
+    # 嵌入
     embedding = db.Column(db.LargeBinary, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
+    # 提供者名称 默认为''
     provider_name = db.Column(db.String(255), nullable=False, server_default=db.text("''::character varying"))
 
     def set_embedding(self, embedding_data: list[float]):
@@ -936,12 +1040,17 @@ class DatasetCollectionBinding(db.Model):  # type: ignore[name-defined]
         db.PrimaryKeyConstraint("id", name="dataset_collection_bindings_pkey"),
         db.Index("provider_model_name_idx", "provider_name", "model_name"),
     )
-
+    # ID
     id = db.Column(StringUUID, primary_key=True, server_default=db.text("uuid_generate_v4()"))
+    # 提供者名称
     provider_name = db.Column(db.String(255), nullable=False)
+    # 模型名称
     model_name = db.Column(db.String(255), nullable=False)
+    # 类型
     type = db.Column(db.String(40), server_default=db.text("'dataset'::character varying"), nullable=False)
+    # 集合名称
     collection_name = db.Column(db.String(64), nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
 
 

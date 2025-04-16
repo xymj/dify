@@ -19,10 +19,15 @@ class APIBasedExtension(db.Model):  # type: ignore[name-defined]
         db.PrimaryKeyConstraint("id", name="api_based_extension_pkey"),
         db.Index("api_based_extension_tenant_idx", "tenant_id"),
     )
-
+    # ID
     id = db.Column(StringUUID, server_default=db.text("uuid_generate_v4()"))
+    # 租户ID
     tenant_id = db.Column(StringUUID, nullable=False)
+    # 名称
     name = db.Column(db.String(255), nullable=False)
+    # API端点
     api_endpoint = db.Column(db.String(255), nullable=False)
+    # API密钥
     api_key = db.Column(db.Text, nullable=False)
+    # 创建时间
     created_at = db.Column(db.DateTime, nullable=False, server_default=func.current_timestamp())
